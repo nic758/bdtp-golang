@@ -1,9 +1,10 @@
 package bdtp
 
 import (
-	"../blockchain"
 	"encoding/binary"
 	"fmt"
+	"github.com/nic758/bdtp-golang/blockchain"
+	"github.com/nic758/bdtp-golang/utils"
 	"log"
 	"net"
 )
@@ -115,6 +116,7 @@ func listen(serv net.Listener) {
 	}
 
 	r := []byte("WE NEED TO SEND A CONFIRMATION, it migth be all tx ids.\n")
+	_, err = conn.Write(utils.ConvertInt32ToBytes(int32(len(r))))
 	_, err = conn.Write(r)
 	if err = conn.Close(); err != nil {
 		//TODO: should not crash program

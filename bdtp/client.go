@@ -1,10 +1,10 @@
 package bdtp
 
 import (
-	"../utils"
 	"bufio"
 	"encoding/binary"
 	"github.com/btcsuite/btcd/btcutil/base58"
+	"github.com/nic758/bdtp-golang/utils"
 	"log"
 	"net"
 )

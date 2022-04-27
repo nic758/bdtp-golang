@@ -2,7 +2,7 @@ package main
 
 import (
 	//wavesplatform "github.com/wavesplatform/go-lib-crypto"
-	"./bdtp"
+	"github.com/nic758/bdtp-golang/bdtp"
 	wavesplatform "github.com/wavesplatform/go-lib-crypto"
 	"io/ioutil"
 	"log"

@@ -1,13 +1,13 @@
 package blockchain
 
 import (
-	"../utils"
 	"bytes"
 	"crypto/ed25519"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/btcsuite/btcd/btcutil/base58"
+	"github.com/nic758/bdtp-golang/utils"
 	wavesplatform "github.com/wavesplatform/go-lib-crypto"
 	"golang.org/x/crypto/blake2b"
 	"golang.org/x/crypto/sha3"
