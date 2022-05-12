@@ -8,4 +8,5 @@ TODO: treat blockchain addresses like pointers.
 
 ## Installation
 git clone git@github.com:nic758/bdtp-golang.git
+
 go mod tidy
