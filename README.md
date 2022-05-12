@@ -7,6 +7,7 @@ TODO: treat blockchain addresses like pointers.
 - Waves 
 
 ## Installation
-git clone git@github.com:nic758/bdtp-golang.git
-
-go mod tidy
+`git clone git@github.com:nic758/bdtp-golang.git`
+`go mod tidy`
+`export WAVES_SEED="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"`
+`go run bdtp-server-exemple.go`
