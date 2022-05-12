@@ -6,6 +6,8 @@ TODO: treat blockchain addresses like pointers.
 ## Currently supported chain
 - Waves 
 
+## Requirements
+go version >= 1.17
 ## Installation
 `git clone git@github.com:nic758/bdtp-golang.git`<br/>
 `go mod tidy`<br/>
