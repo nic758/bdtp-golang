@@ -14,4 +14,4 @@ go version >= 1.17
 `export WAVES_SEED="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"`<br/>
 
 to run a server: `go run bdtp-server-example.go`<br/>
-to run a client `go run bdtp-client-example.go`
+to run a client: `go run bdtp-client-example.go`
