@@ -7,6 +7,7 @@ import (
 	"github.com/nic758/bdtp-golang/utils"
 	"log"
 	"net"
+	"os"
 )
 
 type chainSet struct {
@@ -125,8 +126,10 @@ func listen(serv net.Listener) {
 }
 
 //ALL DATA SHOULD NOT BE ENCODED!!!
-func NewServer(port string) {
-	serv, err := start(port)
+func NewServer() error {
+	p := os.Getenv("PORT")
+
+	serv, err := start(p)
 	if err != nil {
 		log.Fatal(err)
 	}
