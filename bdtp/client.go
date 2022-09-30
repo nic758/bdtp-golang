@@ -9,6 +9,16 @@ import (
 	"net"
 )
 
+type Pointer string
+
+func (p Pointer) GetChain() Pointer {
+	return p[:3]
+}
+
+func (p Pointer) GetAddress() Pointer {
+	return p[3:]
+}
+
 type bdtpClient struct {
 	ad string
 }
@@ -52,14 +62,17 @@ func (c *bdtpClient) SavaDataToChain(chain, address string, data []byte) string 
 	return address
 }
 
-func (c *bdtpClient) FetchDataFromChain(chain, address string) []byte {
+func (c *bdtpClient) FetchDataFromChain(pointer Pointer) []byte {
+	chain := pointer.GetChain()
+	address := pointer.GetAddress()
+
 	conn, err := net.Dial("tcp", c.ad)
 	if err != nil {
 		return nil
 	}
 	buf := bufio.NewWriter(conn)
 	buf.Write([]byte(chain))
-	buf.Write(base58.Decode(address))
+	buf.Write(base58.Decode(string(address)))
 
 	size := utils.ConvertInt32ToBytes(int32(0))
 	buf.Write(size)
