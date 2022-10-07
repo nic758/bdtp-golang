@@ -10,6 +10,6 @@ COPY go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build bdtp-server-example.go
+RUN go build main.go
 
-CMD ["./bdtp-server-example"]
+CMD ["./main server"]
