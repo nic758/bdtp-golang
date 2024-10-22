@@ -31,12 +31,14 @@ const (
 	polygon_testnet                = 80002
 	polygon_data_maxLength         = 100 * 1024 //100kByte
 	polygon_min_amount             = 0
+	polyscan_api_key_env           = "POLYSCAN_API_KEY"
 )
 
 type Polygon struct {
 	pubKey  *ecdsa.PublicKey
 	privKey *ecdsa.PrivateKey
 	address common.Address
+	apiKey  string
 }
 
 type PolygonTransaction struct {
@@ -72,17 +74,21 @@ func NewPolygon() *Polygon {
 	fromAddress := crypto.PubkeyToAddress(*pubKey)
 	fmt.Println("Polygon initialized! \nAddress: ", fromAddress.Hex())
 
+	apiKey, ok := os.LookupEnv(polyscan_api_key_env)
+	if !ok {
+		fmt.Printf("%s not set", polyscan_api_key_env)
+		return nil
+	}
+
 	return &Polygon{
 		privKey: privKey,
 		pubKey:  pubKey,
 		address: fromAddress,
+		apiKey:  apiKey,
 	}
 }
 
-func fetchBlockExplorer(address []byte) ([]PolygonTransaction, error) {
-	//TODO: put in env
-	apiKey := ""
-
+func (p *Polygon) fetchBlockExplorer(address []byte) ([]PolygonTransaction, error) {
 	query := url.Values{}
 	query.Set("module", "account")
 	query.Set("action", "txlist")
@@ -92,7 +98,7 @@ func fetchBlockExplorer(address []byte) ([]PolygonTransaction, error) {
 	query.Set("page", "1")
 	query.Set("offset", "100")
 	query.Set("sort", "asc")
-	query.Set("apikey", apiKey)
+	query.Set("apikey", p.apiKey)
 	requestURL := fmt.Sprintf("%s?%s", polygon_testnet_block_explorer, query.Encode())
 
 	response, err := http.Get(requestURL)
@@ -122,9 +128,9 @@ func fetchBlockExplorer(address []byte) ([]PolygonTransaction, error) {
 	return apiResponse.Result, nil
 }
 
-func (*Polygon) FetchData(address []byte) ([]byte, error) {
+func (p *Polygon) FetchData(address []byte) ([]byte, error) {
 	log.Printf("fetching data from polygon blockchain at %s\n", address)
-	txs, err := fetchBlockExplorer(address)
+	txs, err := p.fetchBlockExplorer(address)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +169,6 @@ func (*Polygon) FetchData(address []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	os.WriteFile("received", buf.Bytes(), 0644)
 	return buf.Bytes(), nil
 }
 
@@ -244,6 +249,6 @@ func (p *Polygon) ForgeData(address []byte, data []byte) error {
 		w += c
 		txAmount = polygon_min_amount
 	}
-	os.WriteFile("sended", data, 0644)
+
 	return nil
 }

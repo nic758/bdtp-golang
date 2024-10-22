@@ -69,6 +69,7 @@ func (c *bdtpClient) FetchDataFromChain(pointer Pointer) []byte {
 
 	conn, err := net.Dial("tcp", c.ad)
 	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 	buf := bufio.NewWriter(conn)
