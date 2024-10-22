@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/btcsuite/btcd/btcutil/base58"
 	"github.com/nic758/bdtp-golang/utils"
 )
 
@@ -66,6 +67,9 @@ func (c *bdtpClient) SavaDataToChain(chain, address string, data []byte) string 
 func (c *bdtpClient) FetchDataFromChain(pointer Pointer) []byte {
 	chain := pointer.GetChain()
 	address := pointer.GetAddress()
+	if chain == "WAV" {
+		address = Pointer(base58.Decode(string(address)))
+	}
 
 	conn, err := net.Dial("tcp", c.ad)
 	if err != nil {
