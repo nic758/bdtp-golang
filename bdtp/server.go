@@ -168,7 +168,6 @@ func listen(serv net.Listener) {
 	}
 }
 
-// ALL DATA SHOULD NOT BE ENCODED!!!
 func NewServer() error {
 	p := os.Getenv("PORT")
 
