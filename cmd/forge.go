@@ -10,6 +10,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/nic758/bdtp-golang/bdtp"
+	"github.com/nic758/bdtp-golang/blockchain"
 	"github.com/nic758/bdtp-golang/cli"
 	wavesplatform "github.com/wavesplatform/go-lib-crypto"
 )
@@ -23,11 +24,20 @@ var CommonClientFlags = []cli.Flag{
 	},
 }
 
+var forgeFlags = []cli.Flag{
+	&cli.StringFlag{
+		Name:   "blockchain",
+		Value:  "POL",
+		Usage:  "specify the blockchain to forge data",
+		EnvVar: "BDTP_CHAIN",
+	},
+}
+
 var forgeCommand = cli.Command{
 	Name:   "forge",
 	Usage:  "forge a file in the blockchain",
 	Action: forge,
-	Flags:  CommonClientFlags,
+	Flags:  append(CommonClientFlags, forgeFlags...),
 }
 
 func generatePolygonAddress() string {
@@ -56,13 +66,23 @@ func generateWavesAddress() string {
 	seed := c.RandomSeed()
 	pair := c.KeyPair(seed)
 
-	fmt.Println("new seed: %s\n", seed)
-	fmt.Println("new secret: %s\n", pair.PrivateKey)
-	fmt.Println("new public: %s\n", pair.PublicKey)
 	newAdd := c.Address(pair.PublicKey, 84)
-	fmt.Println("new address: %s\n", newAdd)
 
 	return string(newAdd)
+}
+
+func generatePointer() string {
+	chain := os.Getenv("BDTP_CHAIN")
+
+	switch chain {
+	case blockchain.Polygon_prefix:
+		return generatePolygonAddress()
+	case blockchain.Waves_prefix:
+		return generateWavesAddress()
+	}
+
+	log.Fatal("BDTP_CHAIN doesn't exist")
+	return ""
 }
 
 func forge(ctx *cli.Context) error {
@@ -82,11 +102,12 @@ func forge(ctx *cli.Context) error {
 		return err
 	}
 
-	newAdd := generatePolygonAddress()
+	newAdd := generatePointer()
 	log.Printf("file in bytes: %d", len(d))
 	fmt.Println("add", newAdd)
-	a := client.SavaDataToChain("POL", newAdd, d)
+	_ = client.SavaDataToChain(os.Getenv("BDTP_CHAIN"), newAdd, d)
 
-	log.Printf("Data stored at POL%s", a)
+	log.Printf("Data stored at %s%s", os.Getenv("BDTP_CHAIN"), newAdd)
+
 	return nil
 }

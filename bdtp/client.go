@@ -38,6 +38,12 @@ func (c *bdtpClient) SavaDataToChain(chain, address string, data []byte) string 
 
 	buf := bufio.NewWriter(conn)
 	buf.Write([]byte(chain))
+
+	//base58 encoding change []byte len
+	if chain == "WAV" {
+		address = string(base58.Decode(address))
+	}
+
 	buf.Write([]byte(address))
 
 	size := utils.ConvertInt32ToBytes(int32(len(data)))
@@ -56,8 +62,6 @@ func (c *bdtpClient) SavaDataToChain(chain, address string, data []byte) string 
 		log.Fatal(err)
 	}
 
-	//log.Printf(string(d))
-
 	if err = conn.Close(); err != nil {
 		log.Fatal(err)
 	}
@@ -68,6 +72,7 @@ func (c *bdtpClient) FetchDataFromChain(pointer Pointer) []byte {
 	chain := pointer.GetChain()
 	address := pointer.GetAddress()
 	if chain == "WAV" {
+		//base58 encoding change []byte len
 		address = Pointer(base58.Decode(string(address)))
 	}
 
