@@ -22,8 +22,8 @@ type chainSet struct {
 }
 
 var Chains = map[string]chainSet{
-	blockchain.Waves_prefix:   {addressLen: 26, txDataLen: 140},
-	blockchain.Polygon_prefix: {addressLen: 42, txDataLen: 5 * 1024},
+	blockchain.Waves_prefix:   {addressLen: 26},
+	blockchain.Polygon_prefix: {addressLen: 42},
 }
 
 func getBlockchain(prefix string) blockchain.IO {

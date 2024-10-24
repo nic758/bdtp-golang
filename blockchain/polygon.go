@@ -215,12 +215,6 @@ func (p *Polygon) sendTransaction(client *ethclient.Client, address common.Addre
 }
 
 func (p *Polygon) ForgeData(address []byte, data []byte) error {
-	/*	if len(data) > polygon_data_maxLength {
-		err := errors.New("the data size exceeds the allowed limit")
-		fmt.Println(err)
-		return err
-	}*/
-
 	log.Printf("posting data to polygon blockchain at %s...!\n", address)
 
 	//mainnet and testnet is not in recipientAddress like waves

@@ -41,20 +41,17 @@ var forgeCommand = cli.Command{
 }
 
 func generatePolygonAddress() string {
-	// Generate a new private key
 	privateKey, err := crypto.GenerateKey()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Derive the public key from the private key
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
 		log.Fatal("Cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 
-	// Generate the address from the public key
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
 	fmt.Printf("Generated Polygon address: %s\n", address)
 
