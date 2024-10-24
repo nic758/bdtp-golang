@@ -6,24 +6,24 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/btcsuite/btcd/btcutil/base58"
-	"github.com/nic758/bdtp-golang/utils"
-	wavesplatform "github.com/wavesplatform/go-lib-crypto"
-	"golang.org/x/crypto/blake2b"
-	"golang.org/x/crypto/sha3"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"sort"
 	"time"
+
+	"github.com/btcsuite/btcd/btcutil/base58"
+	"github.com/nic758/bdtp-golang/utils"
+	wavesplatform "github.com/wavesplatform/go-lib-crypto"
+	"golang.org/x/crypto/blake2b"
+	"golang.org/x/crypto/sha3"
 )
 
-//TODO
+// TODO
 const (
 	Waves_prefix = "WAV"
 
-	waves_env_seed             = "WAVES_SEED"
 	waves_testnet_default_node = "https://nodes-testnet.wavesnodes.com"
 	waves_mainnet_default_node = "https://nodes.wavesnodes.com"
 	waves_mainnet              = 87
@@ -35,6 +35,7 @@ const (
 	Error_blockchain_network = "The provided network is not supported\n"
 )
 
+// TODO: put keys here instead of computing it every single call
 type Waves struct{}
 type TransactionTransfer struct {
 	Version         int    `json:"version"`
@@ -54,6 +55,17 @@ type TransactionTransfer struct {
 	Height int    `json:"height"`
 	Id     string `json:"id"`
 	Sender string `json:"sender"`
+}
+
+func NewWaves() *Waves {
+	_, ok := os.LookupEnv(bdtp_env_seed)
+	if !ok {
+		fmt.Println("Seed missing: unable to initialize waves network")
+		return nil
+	}
+
+	fmt.Println("Waves initialized! \nAddress: TODO")
+	return &Waves{}
 }
 
 func (Waves) FetchData(address []byte) ([]byte, error) {
@@ -106,7 +118,7 @@ func (Waves) FetchData(address []byte) ([]byte, error) {
 	dataLen := txs[0][0].Amount
 	c := int64(0)
 	buf := bytes.Buffer{}
-	buf.Write(utils.ConvertInt32ToBytes(int32(dataLen)))
+
 	for i := 0; c < dataLen; i++ {
 		if i >= len(txs[0]) {
 			log.Printf("Corrupted data.. only %d found on %d asked.", c, dataLen)
@@ -139,10 +151,10 @@ func (Waves) ForgeData(address []byte, data []byte) error {
 		return errors.New(fmt.Sprintf("%s", Error_blockchain_network))
 	}
 
-	seed, ok := os.LookupEnv(waves_env_seed)
+	seed, ok := os.LookupEnv(bdtp_env_seed)
 	if !ok {
 		//TODO create specific error type.
-		return errors.New(fmt.Sprintf("%s%s need to be set.", Error_Env, waves_env_seed))
+		return errors.New(fmt.Sprintf("%s%s need to be set.", Error_Env, bdtp_env_seed))
 	}
 
 	c := wavesplatform.NewWavesCrypto()
