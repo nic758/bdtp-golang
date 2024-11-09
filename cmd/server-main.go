@@ -15,10 +15,10 @@ var srvFlags = []cli.Flag{
 		EnvVar: "PORT",
 	},
 	&cli.StringFlag{
-		Name:   "waves_seed",
+		Name:   "bdtp_seed",
 		Value:  "",
-		Usage:  "the default waves seed the server is gonna be using, if no seed is provided the server will be in read-only mode",
-		EnvVar: "WAVES_SEED",
+		Usage:  "the default seed for the server, if no seed is provided the server will be in read-only mode",
+		EnvVar: "BDTP_SEED",
 	},
 }
 
