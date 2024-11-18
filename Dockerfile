@@ -12,4 +12,4 @@ RUN go mod download
 COPY . .
 RUN go build main.go
 
-CMD ["./main server"]
+ENTRYPOINT ["./main", "server"]
