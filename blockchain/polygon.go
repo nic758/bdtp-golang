@@ -39,6 +39,7 @@ type Polygon struct {
 	privKey *ecdsa.PrivateKey
 	address common.Address
 	apiKey  string
+	nonce   uint64
 }
 
 type PolygonTransaction struct {
@@ -173,10 +174,14 @@ func (p *Polygon) FetchData(address []byte) ([]byte, error) {
 }
 
 func (p *Polygon) sendTransaction(client *ethclient.Client, address common.Address, data []byte, txAmount int) (int, error) {
-	nonce, err := client.PendingNonceAt(context.Background(), p.address)
-	if err != nil {
-		log.Fatalf("Failed to get nonce: %v", err)
-		return 0, err
+	if p.nonce == 0 {
+		nonce, err := client.PendingNonceAt(context.Background(), p.address)
+		if err != nil {
+			log.Fatalf("Failed to get nonce: %v", err)
+			return 0, err
+		}
+
+		p.nonce = nonce
 	}
 
 	value := big.NewInt(int64(txAmount))
@@ -196,7 +201,7 @@ func (p *Polygon) sendTransaction(client *ethclient.Client, address common.Addre
 		return 0, err
 	}
 
-	tx := types.NewTransaction(nonce, address, value, gasLimit, gasPrice, data)
+	tx := types.NewTransaction(p.nonce, address, value, gasLimit, gasPrice, data)
 	chainID := big.NewInt(polygon_testnet)
 
 	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), p.privKey)
@@ -211,6 +216,7 @@ func (p *Polygon) sendTransaction(client *ethclient.Client, address common.Addre
 		return 0, err
 	}
 
+	p.nonce = p.nonce + 1
 	return len(data), nil
 }
 
