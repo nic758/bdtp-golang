@@ -5,6 +5,7 @@ This Protocol helps developers store data seamlessly on chain and is ideal for p
 
 ## Currently supported chain
 - Polygon
+- Waves
 
 ## Requirements
 Go version >= 1.17
